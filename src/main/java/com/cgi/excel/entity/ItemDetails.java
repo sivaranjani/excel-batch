@@ -13,7 +13,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -32,8 +31,7 @@ import lombok.ToString;
 public class ItemDetails {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "detail_gen")
-	@SequenceGenerator(name="detail_gen", sequenceName="detail_seq",allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="detail_id", unique= true,nullable=false)
 	private Long detailId;
 
