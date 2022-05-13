@@ -8,7 +8,6 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.extensions.excel.RowMapper;
 import org.springframework.batch.extensions.excel.streaming.StreamingXlsxItemReader;
-import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,9 +25,12 @@ public class BatchConfiguration {
 
 	@Autowired
 	public JobBuilderFactory jobBuilderFactory;
+	
 	@Autowired
 	public StepBuilderFactory stepBuilderFactory;
 	
+	@Autowired
+	ExcelItemWriter writer;
 
 	@Bean
 	StreamingXlsxItemReader<ItemVo> excelItemReader() {
@@ -49,31 +51,13 @@ public class BatchConfiguration {
 		return new ExcelRowJobProcessor();
 	}
 
-	
-	public ItemWriter<Item> writer() {
-		
-		return new ExcelItemWriter();
-	}
-
 	@Bean
 	public Job excelJob() {
 		
-		Step step = stepBuilderFactory.get("ETL-STEP").<ItemVo, Item>chunk(10).reader(excelItemReader())
-				.processor(processor()).writer(writer()).build();
+		Step step = stepBuilderFactory.get("step1").<ItemVo, Item>chunk(10000).reader(excelItemReader())
+				.processor(processor()).writer(writer).build();
 
 		Job job = jobBuilderFactory.get("excelJob").incrementer(new RunIdIncrementer()).start(step).build();
 		return job;
-		
-		/*
-		 * return jobBuilderFactory.get("excelJob") .incrementer(new RunIdIncrementer())
-		 * .flow(excelStep()) .end() .build();
-		 */
 	}
-
-	/*
-	 * @Bean public Step excelStep() { return
-	 * stepBuilderFactory.get("step1").<ItemVo,
-	 * Item>chunk(1).reader(excelItemReader())
-	 * .processor(processor()).writer(writer()).build(); }
-	 */
 }

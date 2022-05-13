@@ -13,15 +13,13 @@ public class ItemCustomRowMapper implements RowMapper<ItemVo>{
 	@Override
 	public ItemVo mapRow(RowSet rs) throws Exception {
 		
-		ItemVo vo = null;
+		ItemVo vo = new ItemVo();
 		String[] row = rs.getCurrentRow();
 		String itemName = row[1];
 		String price = row[3];
 		String priceDate = row[2];
-		System.out.println("itemName, price, priceDate--->"+itemName +"---"+ price+"---"+ priceDate);
 		if(validateRow(itemName, price, priceDate))
 		{
-			vo = new ItemVo();
 			vo.setItemName(itemName);
 			vo.setItemPrice(Double.valueOf(price));
 			Date priceDt = dateFormat.parse(priceDate);
